@@ -73,18 +73,15 @@ public class AmazonScript {
 		WebDriver visualDriver = device.getVisualDriver();
 
 		visualDriver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-		visualDriver.findElement(By.linkText("Deals"));
-		webDriver.findElement(By.id("searchKeyword")).sendKeys("kindle hdx");
+		visualDriver.findElement(By.linkText("Kindle fire HD"));
 		
-		
-		webDriver.findElement(By.xpath("(//BUTTON)[1]")).click();
+		webDriver.findElement(By.xpath("(//@id=\"twotabsearchtextbox\")[1]")).sendKeys("kindle hdx");
+
+
+		webDriver.findElement(By.xpath("(//INPUT)[2]")).click();
 
 		visualDriver.findElement(By.linkText("Kindle Fire HD 7"));
-
-
-
-		//assertEquals("New York/Newark, NJ (EWR)",text);
-
+ 
 	}
 
 	@AfterClass
