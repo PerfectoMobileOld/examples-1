@@ -1,0 +1,98 @@
+
+import static org.junit.Assert.assertEquals;
+
+import java.io.File;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Collection;
+
+
+import java.util.concurrent.TimeUnit;
+
+import org.junit.AfterClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+
+import com.perfectomobile.httpclient.MediaType;
+import com.perfectomobile.httpclient.utils.FileUtils;
+import com.perfectomobile.selenium.MobileDriver;
+import com.perfectomobile.selenium.api.IMobileDevice;
+import com.perfectomobile.selenium.api.IMobileDriver;
+
+/**
+ * JUnit Parameterized Test
+ *
+ */
+@RunWith(value = Parameterized.class)
+public class AmazonScript {
+
+	private String _dev_id;
+	static MobileDriver driver;
+
+	public AmazonScript(String DeviceID) {
+		this._dev_id = DeviceID;
+
+		String host = Constants.PM_CLOUD;
+		String user = Constants.PM_USER;
+		String password = Constants.PM_PASSWORD;
+		driver = new MobileDriver(host, user, password);
+
+	}
+
+	@Parameters
+	public static Collection<Object[]> data() {
+		return Arrays.asList(new Object[][] {{"D025A0A023920BKQ"}});
+
+	}
+
+
+
+	// The test work on the specific device ID
+	// This testcase go to united.com , look for specific flight and validate we go   
+	@Test
+	public void CheckFlight() {
+
+		IMobileDevice device = ((IMobileDriver) driver).getDevice(_dev_id);
+
+		// Getting the device form Perfecto mobile system, open it and take it to the ready mode (HOME)
+		device.open();
+		device.home();
+
+		// Define to types of web driver 
+		// 1. DOM - standard web webdriver works with the DOM objects
+		// 2. Visual Driver - allows to validate that text appear on the screen using visual analysis (OCR).
+		//    This validation is very important and simulate the real user experience.
+
+
+		WebDriver webDriver = device.getDOMDriver ("www.amazon.com");
+		WebDriver visualDriver = device.getVisualDriver();
+
+		visualDriver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		visualDriver.findElement(By.linkText("Deals"));
+		webDriver.findElement(By.id("searchKeyword")).sendKeys("kindle hdx");
+		
+		
+		webDriver.findElement(By.xpath("(//BUTTON)[1]")).click();
+
+		visualDriver.findElement(By.linkText("Kindle Fire HD 7"));
+
+
+
+		//assertEquals("New York/Newark, NJ (EWR)",text);
+
+	}
+
+	@AfterClass
+	public static void testCleanup() {
+		driver.quit();
+
+	}
+
+}
+
+
